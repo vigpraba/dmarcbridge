@@ -66,14 +66,15 @@ async def logout(response: Response):
     return {"message": "Logged out successfully"}
 
 # ─── Google OAuth - Get Auth URL ─────────────────────────
-@router.get("/google", response_model=GoogleAuthURL)
+@router.get("/google")
 async def google_login():
+    from fastapi.responses import RedirectResponse
     url = await get_google_auth_url()
-    return {"url": url}
+    return RedirectResponse(url=url)
 
 # ─── Google OAuth - Callback ─────────────────────────────
-@router.get("/google/callback", response_model=GoogleCallbackResponse)
-async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
+@router.get("/google/callback")
+async def google_callback(code: str, response: Response, db: AsyncSession = Depends(get_db)):
     user_info = await get_google_user_info(code)
 
     google_sub = user_info["sub"]
@@ -112,8 +113,19 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
         await db.commit()
         contact_id = str(contact.id)
 
-    token = create_jwt_token(contact_id)
-    return {"access_token": token}
+    # Set session cookie and redirect to dashboard
+    from fastapi.responses import RedirectResponse
+    session_token = create_session_cookie(contact_id)
+    redirect = RedirectResponse(url="/", status_code=302)
+    redirect.set_cookie(
+        key="session",
+        value=session_token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        max_age=86400
+    )
+    return redirect
 
 # ─── Get Current User ────────────────────────────────────
 @router.get("/me", response_model=UserResponse)
