@@ -10,170 +10,147 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --ink: #0f0f0f; --paper: #f8f6f1; --cream: #f0ede5;
-    --accent: #c8522a; --accent-light: #e8d5cc; --muted: #8a8680;
-    --border: #e0dbd2; --white: #ffffff; --success: #2d6a4f; --error: #c62828;
-  }
-  html, body, #root { height: 100%; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); -webkit-font-smoothing: antialiased; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .fade-up { animation: fadeUp 0.6s ease both; }
-  .fade-up-1 { animation: fadeUp 0.6s 0.1s ease both; }
-  .fade-up-2 { animation: fadeUp 0.6s 0.2s ease both; }
-  .fade-up-3 { animation: fadeUp 0.6s 0.3s ease both; }
-  .fade-in { animation: fadeIn 0.4s ease both; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 28px; border-radius: 4px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; border: none; transition: all 0.2s ease; text-decoration: none; }
-  .btn-primary { background: var(--ink); color: var(--white); }
-  .btn-primary:hover { background: #2a2a2a; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
-  .btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
-  .btn-outline:hover { background: var(--ink); color: var(--white); }
-  .btn-accent { background: var(--accent); color: var(--white); }
-  .btn-accent:hover { background: #b04620; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200,82,42,0.3); }
-  .btn-google { background: var(--white); color: var(--ink); border: 1.5px solid var(--border); width: 100%; }
-  .btn-google:hover { background: var(--cream); border-color: var(--ink); }
-  .btn-full { width: 100%; }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
-  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
-  .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 64px; background: rgba(248,246,241,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-  .nav-links { display: flex; align-items: center; gap: 32px; }
-  .nav-link { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-  .nav-link:hover { color: var(--ink); }
-  .nav-actions { display: flex; align-items: center; gap: 12px; }
-  .landing { min-height: 100vh; }
-  .hero { padding: 140px 48px 80px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
-  .hero-eyebrow::before { content: ''; display: block; width: 24px; height: 1.5px; background: var(--accent); }
-  .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(42px, 5vw, 60px); line-height: 1.1; color: var(--ink); margin-bottom: 24px; }
-  .hero-title em { font-style: italic; color: var(--accent); }
-  .hero-desc { font-size: 17px; line-height: 1.7; color: var(--muted); margin-bottom: 40px; font-weight: 300; }
-  .hero-actions { display: flex; gap: 16px; align-items: center; }
-  .hero-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: 0 8px 40px rgba(0,0,0,0.08); }
-  .hero-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .hero-card-title { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
-  .status-badge { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 100px; background: #e8f5e9; color: var(--success); }
-  .domain-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
-  .domain-row:last-child { border-bottom: none; }
-  .domain-name { font-size: 14px; font-weight: 500; }
-  .domain-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .score-bar { display: flex; align-items: center; gap: 10px; }
-  .score-num { font-size: 13px; font-weight: 600; min-width: 28px; text-align: right; }
-  .bar-track { width: 80px; height: 4px; background: var(--cream); border-radius: 2px; }
-  .bar-fill { height: 100%; border-radius: 2px; background: var(--success); }
-  .bar-fill.warn { background: #f59e0b; }
-  .bar-fill.bad { background: var(--error); }
-  .floating-stat { position: absolute; background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-  .floating-stat.top-left { top: -20px; left: -30px; }
-  .floating-stat.bottom-right { bottom: -20px; right: -20px; }
-  .stat-value { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--ink); }
-  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .features { padding: 80px 48px; background: var(--cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .features-inner { max-width: 1100px; margin: 0 auto; }
-  .section-label { font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 48px; display: flex; align-items: center; gap: 12px; }
-  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-  .feature-item { background: var(--white); padding: 36px 32px; transition: box-shadow 0.2s; }
-  .feature-item:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); z-index: 1; position: relative; }
-  .feature-icon { width: 40px; height: 40px; background: var(--accent-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-  .feature-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
-  .feature-desc { font-size: 14px; color: var(--muted); line-height: 1.6; font-weight: 300; }
-  .cta-section { padding: 100px 48px; text-align: center; background: var(--ink); color: var(--white); }
-  .cta-title { font-family: 'DM Serif Display', serif; font-size: 48px; margin-bottom: 16px; }
-  .cta-title em { font-style: italic; color: var(--accent-light); }
-  .cta-desc { font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 40px; font-weight: 300; }
-  .btn-cta { background: var(--accent); color: var(--white); font-size: 16px; padding: 16px 40px; }
-  .btn-cta:hover { background: #b04620; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,82,42,0.4); }
-  footer { padding: 32px 48px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .footer-copy { font-size: 13px; color: var(--muted); }
-  .auth-page { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
-  .auth-visual { background: var(--ink); padding: 60px 48px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
-  .auth-visual::before { content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(200,82,42,0.2) 0%, transparent 70%); pointer-events: none; }
-  .auth-visual-logo { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--white); display: flex; align-items: center; gap: 12px; text-decoration: none; }
-  .auth-visual-logo-mark { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-  .auth-quote { color: rgba(255,255,255,0.9); }
-  .auth-quote-text { font-family: 'DM Serif Display', serif; font-size: 28px; line-height: 1.4; margin-bottom: 16px; }
-  .auth-quote-text em { font-style: italic; color: var(--accent-light); }
-  .auth-quote-sub { font-size: 14px; color: rgba(255,255,255,0.5); font-weight: 300; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); }
-  .dot.active { background: var(--accent); }
-  .auth-form-panel { display: flex; flex-direction: column; justify-content: center; padding: 60px 64px; background: var(--paper); }
-  .auth-form-inner { max-width: 400px; width: 100%; }
-  .auth-form-header { margin-bottom: 40px; }
-  .auth-form-title { font-family: 'DM Serif Display', serif; font-size: 36px; margin-bottom: 8px; }
-  .auth-form-sub { font-size: 14px; color: var(--muted); font-weight: 300; }
-  .auth-form-sub a { color: var(--accent); text-decoration: none; font-weight: 500; }
-  .form-group { margin-bottom: 20px; }
-  .form-label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 8px; color: var(--ink); }
-  .form-input { width: 100%; padding: 12px 16px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
-  .form-input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(15,15,15,0.08); }
-  .divider { display: flex; align-items: center; gap: 16px; margin: 24px 0; font-size: 12px; color: var(--muted); }
-  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .alert { padding: 12px 16px; border-radius: 6px; font-size: 13px; margin-bottom: 20px; }
-  .alert-error { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; }
-  .alert-success { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
-  .dashboard { display: flex; min-height: 100vh; }
-  .sidebar { width: 240px; background: var(--ink); color: var(--white); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; }
-  .sidebar-logo { padding: 24px; font-family: 'DM Serif Display', serif; font-size: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .sidebar-nav { flex: 1; padding: 24px 16px; display: flex; flex-direction: column; gap: 4px; }
-  .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 6px; font-size: 14px; color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.15s; text-decoration: none; }
-  .sidebar-item:hover { background: rgba(255,255,255,0.08); color: var(--white); }
-  .sidebar-item.active { background: rgba(200,82,42,0.2); color: var(--white); }
-  .sidebar-item svg { width: 16px; height: 16px; flex-shrink: 0; }
-  .sidebar-section { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.25); padding: 16px 12px 8px; }
-  .sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,0.08); }
-  .user-pill { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px; cursor: pointer; transition: background 0.15s; }
-  .user-pill:hover { background: rgba(255,255,255,0.08); }
-  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: white; flex-shrink: 0; }
-  .user-info { flex: 1; min-width: 0; }
-  .user-name { font-size: 13px; font-weight: 500; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
-  .main-content { flex: 1; margin-left: 240px; padding: 40px 48px; background: var(--paper); min-height: 100vh; }
-  .page-header { margin-bottom: 40px; }
-  .page-title { font-family: 'DM Serif Display', serif; font-size: 32px; margin-bottom: 6px; }
-  .page-sub { font-size: 14px; color: var(--muted); font-weight: 300; }
-  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-  .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: box-shadow 0.2s; }
-  .stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
-  .stat-card-label { font-size: 12px; font-weight: 500; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 12px; }
-  .stat-card-value { font-family: 'DM Serif Display', serif; font-size: 36px; color: var(--ink); margin-bottom: 6px; }
-  .stat-card-delta { font-size: 12px; color: var(--success); font-weight: 500; }
-  .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-  .card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 28px; }
-  .card-title { font-size: 15px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
-  .card-title-action { font-size: 12px; color: var(--accent); cursor: pointer; font-weight: 400; }
-  .table { width: 100%; border-collapse: collapse; }
-  .table th { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 0 0 12px; text-align: left; border-bottom: 1px solid var(--border); }
-  .table td { padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
-  .table tr:last-child td { border-bottom: none; }
-  .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 500; }
-  .badge-pass { background: #e8f5e9; color: var(--success); }
-  .badge-fail { background: #fef2f2; color: var(--error); }
-  .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-  .activity-item:last-child { border-bottom: none; }
-  .activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-  .activity-dot.green { background: var(--success); }
-  .activity-dot.red { background: var(--error); }
-  .activity-dot.amber { background: #f59e0b; }
-  .activity-text { font-size: 13px; line-height: 1.5; }
-  .activity-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#0f0f0f;--paper:#f8f6f1;--cream:#f0ede5;--accent:#c8522a;--accent-light:#e8d5cc;--muted:#8a8680;--border:#e0dbd2;--white:#ffffff;--success:#2d6a4f;--error:#c62828}
+html,body,#root{height:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade-up{animation:fadeUp .6s ease both}.fade-up-1{animation:fadeUp .6s .1s ease both}.fade-up-2{animation:fadeUp .6s .2s ease both}.fade-up-3{animation:fadeUp .6s .3s ease both}.fade-in{animation:fadeIn .4s ease both}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 28px;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;letter-spacing:.02em;cursor:pointer;border:none;transition:all .2s ease;text-decoration:none}
+.btn-primary{background:var(--ink);color:var(--white)}.btn-primary:hover{background:#2a2a2a;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}.btn-outline:hover{background:var(--ink);color:var(--white)}
+.btn-accent{background:var(--accent);color:var(--white)}.btn-accent:hover{background:#b04620;transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,82,42,.3)}
+.btn-google{background:var(--white);color:var(--ink);border:1.5px solid var(--border);width:100%}.btn-google:hover{background:var(--cream);border-color:var(--ink)}
+.btn-full{width:100%}.btn:disabled{opacity:.6;cursor:not-allowed;transform:none!important}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(248,246,241,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-link{font-size:14px;color:var(--muted);text-decoration:none;transition:color .2s}.nav-link:hover{color:var(--ink)}
+.nav-actions{display:flex;align-items:center;gap:12px}
+.hero{padding:140px 48px 80px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
+.hero-eyebrow::before{content:'';display:block;width:24px;height:1.5px;background:var(--accent)}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(42px,5vw,60px);line-height:1.1;color:var(--ink);margin-bottom:24px}
+.hero-title em{font-style:italic;color:var(--accent)}
+.hero-desc{font-size:17px;line-height:1.7;color:var(--muted);margin-bottom:40px;font-weight:300}
+.hero-actions{display:flex;gap:16px;align-items:center}
+.hero-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;box-shadow:0 8px 40px rgba(0,0,0,.08)}
+.hero-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.hero-card-title{font-size:13px;font-weight:500;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.status-badge{font-size:11px;font-weight:500;padding:4px 10px;border-radius:100px;background:#e8f5e9;color:var(--success)}
+.domain-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}.domain-row:last-child{border-bottom:none}
+.domain-name{font-size:14px;font-weight:500}.domain-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.score-bar{display:flex;align-items:center;gap:10px}.score-num{font-size:13px;font-weight:600;min-width:28px;text-align:right}
+.bar-track{width:80px;height:4px;background:var(--cream);border-radius:2px}.bar-fill{height:100%;border-radius:2px;background:var(--success)}.bar-fill.warn{background:#f59e0b}.bar-fill.bad{background:var(--error)}
+.floating-stat{position:absolute;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.floating-stat.top-left{top:-20px;left:-30px}.floating-stat.bottom-right{bottom:-20px;right:-20px}
+.stat-value{font-family:'DM Serif Display',serif;font-size:24px;color:var(--ink)}.stat-label{font-size:11px;color:var(--muted);margin-top:2px}
+.features{padding:80px 48px;background:var(--cream);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.features-inner{max-width:1100px;margin:0 auto}
+.section-label{font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:48px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.feature-item{background:var(--white);padding:36px 32px;transition:box-shadow .2s}.feature-item:hover{box-shadow:0 8px 32px rgba(0,0,0,.08);z-index:1;position:relative}
+.feature-icon{width:40px;height:40px;background:var(--accent-light);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.feature-title{font-size:16px;font-weight:600;margin-bottom:10px}.feature-desc{font-size:14px;color:var(--muted);line-height:1.6;font-weight:300}
+.cta-section{padding:100px 48px;text-align:center;background:var(--ink);color:var(--white)}
+.cta-title{font-family:'DM Serif Display',serif;font-size:48px;margin-bottom:16px}.cta-title em{font-style:italic;color:var(--accent-light)}
+.cta-desc{font-size:16px;color:rgba(255,255,255,.6);margin-bottom:40px;font-weight:300}
+.btn-cta{background:var(--accent);color:var(--white);font-size:16px;padding:16px 40px}.btn-cta:hover{background:#b04620;transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,82,42,.4)}
+footer{padding:32px 48px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-size:13px;color:var(--muted)}
+.auth-page{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.auth-visual{background:var(--ink);padding:60px 48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.auth-visual::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(200,82,42,.2) 0%,transparent 70%);pointer-events:none}
+.auth-visual-logo{font-family:'DM Serif Display',serif;font-size:26px;color:var(--white);display:flex;align-items:center;gap:12px;text-decoration:none}
+.auth-visual-logo-mark{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.auth-quote{color:rgba(255,255,255,.9)}.auth-quote-text{font-family:'DM Serif Display',serif;font-size:28px;line-height:1.4;margin-bottom:16px}.auth-quote-text em{font-style:italic;color:var(--accent-light)}
+.auth-quote-sub{font-size:14px;color:rgba(255,255,255,.5);font-weight:300}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2)}.dot.active{background:var(--accent)}
+.auth-form-panel{display:flex;flex-direction:column;justify-content:center;padding:60px 64px;background:var(--paper)}
+.auth-form-inner{max-width:400px;width:100%}
+.auth-form-header{margin-bottom:40px}
+.auth-form-title{font-family:'DM Serif Display',serif;font-size:36px;margin-bottom:8px}
+.auth-form-sub{font-size:14px;color:var(--muted);font-weight:300}.auth-form-sub a{color:var(--accent);text-decoration:none;font-weight:500}
+.form-group{margin-bottom:20px}.form-label{display:block;font-size:13px;font-weight:500;margin-bottom:8px;color:var(--ink)}
+.form-input{width:100%;padding:12px 16px;border-radius:6px;border:1.5px solid var(--border);background:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);transition:border-color .2s,box-shadow .2s;outline:none}
+.form-input:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(15,15,15,.08)}
+.divider{display:flex;align-items:center;gap:16px;margin:24px 0;font-size:12px;color:var(--muted)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.alert{padding:12px 16px;border-radius:6px;font-size:13px;margin-bottom:20px}
+.alert-error{background:#fef2f2;color:var(--error);border:1px solid #fecaca}
+.alert-success{background:#f0fdf4;color:var(--success);border:1px solid #bbf7d0}
+.dashboard{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--ink);color:var(--white);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0}
+.sidebar-logo{padding:24px;font-family:'DM Serif Display',serif;font-size:20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sidebar-nav{flex:1;padding:24px 16px;display:flex;flex-direction:column;gap:4px}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-size:14px;color:rgba(255,255,255,.6);cursor:pointer;transition:all .15s;text-decoration:none}
+.sidebar-item:hover{background:rgba(255,255,255,.08);color:var(--white)}.sidebar-item.active{background:rgba(200,82,42,.2);color:var(--white)}
+.sidebar-item svg{width:16px;height:16px;flex-shrink:0}
+.sidebar-section{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:16px 12px 8px}
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,.08)}
+.user-pill{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:6px;cursor:pointer;transition:background .15s}.user-pill:hover{background:rgba(255,255,255,.08)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:white;flex-shrink:0}
+.user-info{flex:1;min-width:0}.user-name{font-size:13px;font-weight:500;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.user-role{font-size:11px;color:rgba(255,255,255,.4)}
+.main-content{flex:1;margin-left:240px;padding:40px 48px;background:var(--paper);min-height:100vh}
+.page-header{margin-bottom:40px}.page-title{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:6px}.page-sub{font-size:14px;color:var(--muted);font-weight:300}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:24px;transition:box-shadow .2s}.stat-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.07)}
+.stat-card-label{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px}
+.stat-card-value{font-family:'DM Serif Display',serif;font-size:36px;color:var(--ink);margin-bottom:6px}
+.stat-card-delta{font-size:12px;color:var(--success);font-weight:500}
+.content-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px}
+.card-title{font-size:15px;font-weight:600;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.card-title-action{font-size:12px;color:var(--accent);cursor:pointer;font-weight:400}
+.table{width:100%;border-collapse:collapse}
+.table th{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:0 0 12px;text-align:left;border-bottom:1px solid var(--border)}
+.table td{padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;vertical-align:middle}.table tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:500}
+.badge-pass{background:#e8f5e9;color:var(--success)}.badge-fail{background:#fef2f2;color:var(--error)}.badge-warn{background:#fffbeb;color:#92400e}
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}.activity-item:last-child{border-bottom:none}
+.activity-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}.activity-dot.green{background:var(--success)}.activity-dot.red{background:var(--error)}.activity-dot.amber{background:#f59e0b}
+.activity-text{font-size:13px;line-height:1.5}.activity-time{font-size:11px;color:var(--muted);margin-top:2px}
+.wizard-overlay{position:fixed;inset:0;background:rgba(15,15,15,.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px)}
+.wizard-modal{background:var(--paper);border-radius:16px;width:100%;max-width:560px;box-shadow:0 24px 80px rgba(0,0,0,.2);overflow:hidden}
+.wizard-header{padding:32px 36px 24px;border-bottom:1px solid var(--border)}
+.wizard-steps{display:flex;gap:0;margin-bottom:24px}
+.wizard-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
+.wizard-step::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:2px;background:var(--border);z-index:0}
+.wizard-step:last-child::after{display:none}
+.wizard-step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--muted);z-index:1;transition:all .3s}
+.wizard-step.active .wizard-step-dot{border-color:var(--accent);background:var(--accent);color:white}
+.wizard-step.done .wizard-step-dot{border-color:var(--success);background:var(--success);color:white}
+.wizard-step-label{font-size:11px;color:var(--muted);font-weight:500;text-align:center}
+.wizard-step.active .wizard-step-label{color:var(--accent)}.wizard-step.done .wizard-step-label{color:var(--success)}
+.wizard-title{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:6px}.wizard-sub{font-size:14px;color:var(--muted);font-weight:300}
+.wizard-body{padding:28px 36px}.wizard-footer{padding:20px 36px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.dns-record-box{background:var(--ink);color:#e8e8e8;border-radius:8px;padding:16px 20px;font-family:monospace;font-size:13px;line-height:1.6;margin:16px 0;position:relative}
+.copy-btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;transition:background .2s}
+.copy-btn:hover{background:rgba(255,255,255,.2)}
+.check-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}.check-item:last-child{border-bottom:none}
+.check-item-left{display:flex;align-items:center;gap:12px}
+.check-item-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.check-item-name{font-size:14px;font-weight:500}.check-item-record{font-size:11px;color:var(--muted);font-family:monospace;margin-top:2px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.score-circle{width:100px;height:100px;border-radius:50%;margin:0 auto 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'DM Serif Display',serif}
+.score-circle-value{font-size:32px;line-height:1}.score-circle-label{font-size:11px;color:var(--muted);margin-top:4px}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState } = React;
+const { useState, useEffect } = React;
 
-const Shield = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{width:'100%',height:'100%'}}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>);
-const BarChart = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>);
-const Globe = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>);
-const Bell = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>);
+const ShieldIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{width:'100%',height:'100%'}}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>);
+const BarChartIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>);
+const GlobeIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>);
+const BellIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>);
+const MailIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>);
 const SettingsIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>);
-const LogOut = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{width:14,height:14,color:'rgba(255,255,255,0.3)'}}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>);
-const Mail = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>);
+const LogOutIcon = () => (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{width:14,height:14,color:'rgba(255,255,255,0.3)'}}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>);
 
 const GoogleIcon = () => (
   <svg style={{width:18,height:18,flexShrink:0}} viewBox="0 0 24 24">
@@ -186,7 +163,7 @@ const GoogleIcon = () => (
 
 const LogoMark = ({ size=32, accent=false }) => (
   <div style={{width:size,height:size,background:accent?'#c8522a':'#0f0f0f',borderRadius:6,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
-    <svg width={size*0.56} height={size*0.56} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width={size*.56} height={size*.56} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
   </div>
@@ -194,14 +171,8 @@ const LogoMark = ({ size=32, accent=false }) => (
 
 const Navbar = ({ onNavigate }) => (
   <nav className="nav">
-    <a className="nav-logo" onClick={() => onNavigate('landing')} style={{cursor:'pointer'}}>
-      <LogoMark size={32}/> DMARCBridge
-    </a>
-    <div className="nav-links">
-      <a className="nav-link" href="#">Features</a>
-      <a className="nav-link" href="#">Docs</a>
-      <a className="nav-link" href="#">Pricing</a>
-    </div>
+    <a className="nav-logo" onClick={() => onNavigate('landing')} style={{cursor:'pointer'}}><LogoMark size={32}/> DMARCBridge</a>
+    <div className="nav-links"><a className="nav-link" href="#">Features</a><a className="nav-link" href="#">Docs</a><a className="nav-link" href="#">Pricing</a></div>
     <div className="nav-actions">
       <button className="btn btn-outline" style={{padding:'9px 20px'}} onClick={() => onNavigate('login')}>Log in</button>
       <button className="btn btn-primary" style={{padding:'9px 20px'}} onClick={() => onNavigate('register')}>Get started</button>
@@ -210,7 +181,7 @@ const Navbar = ({ onNavigate }) => (
 );
 
 const Landing = ({ onNavigate }) => (
-  <div className="landing">
+  <div style={{minHeight:'100vh'}}>
     <Navbar onNavigate={onNavigate}/>
     <section className="hero">
       <div>
@@ -225,10 +196,7 @@ const Landing = ({ onNavigate }) => (
       <div style={{position:'relative'}} className="fade-up-2">
         <div className="floating-stat top-left"><div className="stat-value">98.4%</div><div className="stat-label">Pass rate today</div></div>
         <div className="hero-card">
-          <div className="hero-card-header">
-            <span className="hero-card-title">Domain Overview</span>
-            <span className="status-badge">● Live</span>
-          </div>
+          <div className="hero-card-header"><span className="hero-card-title">Domain Overview</span><span className="status-badge">● Live</span></div>
           {[{name:'acme.com',meta:'12,430 messages',score:98,cls:''},{name:'mail.acme.com',meta:'3,201 messages',score:76,cls:'warn'},{name:'newsletter.co',meta:'890 messages',score:41,cls:'bad'}].map(d => (
             <div className="domain-row" key={d.name}>
               <div><div className="domain-name">{d.name}</div><div className="domain-meta">{d.meta}</div></div>
@@ -247,9 +215,9 @@ const Landing = ({ onNavigate }) => (
         <div className="section-label">Core Features</div>
         <div className="features-grid">
           {[
-            {icon:<Shield/>,title:'DMARC Enforcement',desc:'Monitor and enforce p=quarantine and p=reject policies with real-time visibility into authentication results.'},
-            {icon:<BarChart/>,title:'Aggregate Reports',desc:'Parse and visualise RUA/RUF reports automatically. Understand exactly who is sending email on your behalf.'},
-            {icon:<Globe/>,title:'Multi-Domain',desc:'Manage SPF, DKIM, and DMARC across all your domains from a single unified interface.'},
+            {icon:<ShieldIcon/>,title:'DMARC Enforcement',desc:'Monitor and enforce p=quarantine and p=reject policies with real-time visibility into authentication results.'},
+            {icon:<BarChartIcon/>,title:'Aggregate Reports',desc:'Parse and visualise RUA/RUF reports automatically. Understand exactly who is sending email on your behalf.'},
+            {icon:<GlobeIcon/>,title:'Multi-Domain',desc:'Manage SPF, DKIM, and DMARC across all your domains from a single unified interface.'},
           ].map(f => (
             <div className="feature-item" key={f.title}>
               <div className="feature-icon" style={{color:'var(--accent)'}}>{f.icon}</div>
@@ -266,7 +234,7 @@ const Landing = ({ onNavigate }) => (
       <button className="btn btn-cta" onClick={() => onNavigate('register')}>Create free account</button>
     </section>
     <footer>
-      <div style={{fontFamily:'DM Serif Display',fontSize:18,display:'flex',alignItems:'center',gap:8}}><LogoMark size={24}/> DMARCBridge</div>
+      <div style={{fontFamily:'DM Serif Display,serif',fontSize:18,display:'flex',alignItems:'center',gap:8}}><LogoMark size={24}/> DMARCBridge</div>
       <div className="footer-copy">© 2026 DMARCBridge. All rights reserved.</div>
     </footer>
   </div>
@@ -277,34 +245,24 @@ const Login = ({ onNavigate, onLogin }) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const handleSubmit = async () => {
     if (!email || !password) { setError('Please fill in all fields'); return; }
     setLoading(true); setError('');
     try {
-      const res = await fetch('/auth/login', {
-        method: 'POST', credentials: 'include',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({email, password})
-      });
+      const res = await fetch('/auth/login', {method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Login failed');
       onLogin(data.email);
-    } catch(e) { setError(e.message); }
-    finally { setLoading(false); }
+    } catch(e) { setError(e.message); } finally { setLoading(false); }
   };
-
   return (
     <div className="auth-page">
       <div className="auth-visual">
         <a className="auth-visual-logo" onClick={() => onNavigate('landing')} style={{cursor:'pointer'}}>
-          <div className="auth-visual-logo-mark" style={{width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{width:20,height:20,color:'white'}}><Shield/></div></div>
+          <div className="auth-visual-logo-mark" style={{width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{width:20,height:20,color:'white'}}><ShieldIcon/></div></div>
           DMARCBridge
         </a>
-        <div className="auth-quote">
-          <div className="auth-quote-text">Your domain's reputation,<br/> <em>always protected.</em></div>
-          <div className="auth-quote-sub">Real-time DMARC monitoring and enforcement</div>
-        </div>
+        <div className="auth-quote"><div className="auth-quote-text">Your domain's reputation,<br/> <em>always protected.</em></div><div className="auth-quote-sub">Real-time DMARC monitoring and enforcement</div></div>
         <div style={{display:'flex',gap:8}}><div className="dot active"/><div className="dot"/><div className="dot"/></div>
       </div>
       <div className="auth-form-panel">
@@ -314,18 +272,14 @@ const Login = ({ onNavigate, onLogin }) => {
             <p className="auth-form-sub">Don't have an account? <a onClick={() => onNavigate('register')} style={{cursor:'pointer'}}>Sign up free</a></p>
           </div>
           {error && <div className="alert alert-error">{error}</div>}
-          <button className="btn btn-google" onClick={() => window.location.href='/auth/google'}>
-            <GoogleIcon/> Continue with Google
-          </button>
+          <button className="btn btn-google" onClick={() => window.location.href='/auth/google'}><GoogleIcon/> Continue with Google</button>
           <div className="divider">or continue with email</div>
           <div className="form-group">
             <label className="form-label">Email address</label>
             <input className="form-input" type="email" placeholder="you@company.com" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key==='Enter' && handleSubmit()}/>
           </div>
           <div className="form-group">
-            <label className="form-label" style={{display:'flex',justifyContent:'space-between'}}>
-              Password <a href="#" style={{color:'var(--accent)',fontSize:12,fontWeight:400}}>Forgot?</a>
-            </label>
+            <label className="form-label" style={{display:'flex',justifyContent:'space-between'}}>Password <a href="#" style={{color:'var(--accent)',fontSize:12,fontWeight:400}}>Forgot?</a></label>
             <input className="form-input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key==='Enter' && handleSubmit()}/>
           </div>
           <button className="btn btn-primary btn-full" style={{marginTop:8}} onClick={handleSubmit} disabled={loading}>
@@ -343,41 +297,30 @@ const Register = ({ onNavigate }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const set = k => e => setForm(f => ({...f,[k]:e.target.value}));
-
   const handleSubmit = async () => {
     if (!form.email || !form.password) { setError('Email and password are required'); return; }
     if (form.password.length < 8) { setError('Password must be at least 8 characters'); return; }
     setLoading(true); setError('');
     try {
-      const res = await fetch('/auth/register', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(form)
-      });
+      const res = await fetch('/auth/register', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(form)});
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Registration failed');
       setSuccess(true);
       setTimeout(() => onNavigate('login'), 1500);
-    } catch(e) { setError(e.message); }
-    finally { setLoading(false); }
+    } catch(e) { setError(e.message); } finally { setLoading(false); }
   };
-
   return (
     <div className="auth-page">
       <div className="auth-visual">
         <a className="auth-visual-logo" onClick={() => onNavigate('landing')} style={{cursor:'pointer'}}>
-          <div className="auth-visual-logo-mark" style={{width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{width:20,height:20,color:'white'}}><Shield/></div></div>
+          <div className="auth-visual-logo-mark" style={{width:36,height:36,display:'flex',alignItems:'center',justifyContent:'center'}}><div style={{width:20,height:20,color:'white'}}><ShieldIcon/></div></div>
           DMARCBridge
         </a>
-        <div className="auth-quote">
-          <div className="auth-quote-text">Set up DMARC monitoring<br/> in <em>minutes, not days.</em></div>
-          <div className="auth-quote-sub">Join teams protecting their email infrastructure</div>
-        </div>
+        <div className="auth-quote"><div className="auth-quote-text">Set up DMARC monitoring<br/> in <em>minutes, not days.</em></div><div className="auth-quote-sub">Join teams protecting their email infrastructure</div></div>
         <div style={{display:'flex',flexDirection:'column',gap:12}}>
           {['No credit card required','Free forever plan','Setup in under 5 minutes'].map(t => (
             <div key={t} style={{display:'flex',alignItems:'center',gap:10,fontSize:13,color:'rgba(255,255,255,0.7)'}}>
-              <div style={{width:20,height:20,borderRadius:'50%',background:'rgba(200,82,42,0.3)',display:'flex',alignItems:'center',justifyContent:'center',color:'#e8a088',fontSize:10}}>✓</div>
-              {t}
+              <div style={{width:20,height:20,borderRadius:'50%',background:'rgba(200,82,42,0.3)',display:'flex',alignItems:'center',justifyContent:'center',color:'#e8a088',fontSize:10}}>✓</div>{t}
             </div>
           ))}
         </div>
@@ -390,53 +333,276 @@ const Register = ({ onNavigate }) => {
           </div>
           {error && <div className="alert alert-error">{error}</div>}
           {success && <div className="alert alert-success">Account created! Redirecting to login…</div>}
-          <button className="btn btn-google" onClick={() => window.location.href='/auth/google'}>
-            <GoogleIcon/> Sign up with Google
-          </button>
+          <button className="btn btn-google" onClick={() => window.location.href='/auth/google'}><GoogleIcon/> Sign up with Google</button>
           <div className="divider">or sign up with email</div>
-          <div className="form-group">
-            <label className="form-label">Full name</label>
-            <input className="form-input" type="text" placeholder="Jane Smith" value={form.name} onChange={set('name')}/>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Email address</label>
-            <input className="form-input" type="email" placeholder="you@company.com" value={form.email} onChange={set('email')}/>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Password</label>
-            <input className="form-input" type="password" placeholder="Min. 8 characters" value={form.password} onChange={set('password')} onKeyDown={e => e.key==='Enter' && handleSubmit()}/>
-          </div>
+          <div className="form-group"><label className="form-label">Full name</label><input className="form-input" type="text" placeholder="Jane Smith" value={form.name} onChange={set('name')}/></div>
+          <div className="form-group"><label className="form-label">Email address</label><input className="form-input" type="email" placeholder="you@company.com" value={form.email} onChange={set('email')}/></div>
+          <div className="form-group"><label className="form-label">Password</label><input className="form-input" type="password" placeholder="Min. 8 characters" value={form.password} onChange={set('password')} onKeyDown={e => e.key==='Enter' && handleSubmit()}/></div>
           <button className="btn btn-accent btn-full" style={{marginTop:8}} onClick={handleSubmit} disabled={loading||success}>
             {loading ? <><div className="spinner"/>Creating account…</> : 'Create account'}
           </button>
-          <p style={{fontSize:12,color:'var(--muted)',marginTop:16,textAlign:'center',lineHeight:1.6}}>
-            By signing up you agree to our <a href="#" style={{color:'var(--accent)'}}>Terms</a> and <a href="#" style={{color:'var(--accent)'}}>Privacy Policy</a>
-          </p>
+          <p style={{fontSize:12,color:'var(--muted)',marginTop:16,textAlign:'center',lineHeight:1.6}}>By signing up you agree to our <a href="#" style={{color:'var(--accent)'}}>Terms</a> and <a href="#" style={{color:'var(--accent)'}}>Privacy Policy</a></p>
         </div>
       </div>
     </div>
   );
 };
 
+const OnboardingWizard = ({ onClose, onDone }) => {
+  const [step, setStep] = useState(1);
+  const [domain, setDomain] = useState('');
+  const [domainId, setDomainId] = useState('');
+  const [token, setToken] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [checkResult, setCheckResult] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const steps = ['Add Domain','Verify Ownership','DNS Check','Summary'];
+
+  const copyToken = () => {
+    navigator.clipboard.writeText(`dmarcbridge-verify=${token}`);
+    setCopied(true); setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleAddDomain = async () => {
+    if (!domain) { setError('Please enter a domain name'); return; }
+    setLoading(true); setError('');
+    try {
+      const res = await fetch('/domains/', {method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({domain_name:domain})});
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Failed to add domain');
+      setDomainId(data.id);
+      setToken(data.verification_token.replace('dmarcbridge-verify=',''));
+      setStep(2);
+    } catch(e) { setError(e.message); } finally { setLoading(false); }
+  };
+
+  const handleVerify = async () => {
+    setLoading(true); setError('');
+    try {
+      const res = await fetch(`/domains/${domainId}/verify`, {method:'POST',credentials:'include'});
+      const data = await res.json();
+      if (data.is_verified) { setStep(3); }
+      else setError('TXT record not found yet. DNS changes can take 24–48hrs to propagate. Try again shortly.');
+    } catch(e) { setError('Verification failed'); } finally { setLoading(false); }
+  };
+
+  const handleCheck = async () => {
+    setLoading(true); setError('');
+    try {
+      const res = await fetch(`/domains/${domainId}/check`, {method:'POST',credentials:'include'});
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Check failed');
+      setCheckResult(data); setStep(4);
+    } catch(e) { setError(e.message); } finally { setLoading(false); }
+  };
+
+  return (
+    <div className="wizard-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="wizard-modal fade-in">
+        <div className="wizard-header">
+          <div className="wizard-steps">
+            {steps.map((s,i) => (
+              <div key={s} className={`wizard-step ${step===i+1?'active':step>i+1?'done':''}`}>
+                <div className="wizard-step-dot">{step>i+1?'✓':i+1}</div>
+                <div className="wizard-step-label">{s}</div>
+              </div>
+            ))}
+          </div>
+          {step===1 && <><div className="wizard-title">Add your domain</div><div className="wizard-sub">Enter the domain you want to monitor with DMARC.</div></>}
+          {step===2 && <><div className="wizard-title">Verify ownership</div><div className="wizard-sub">Add this TXT record to your DNS to prove you own <strong>{domain}</strong>.</div></>}
+          {step===3 && <><div className="wizard-title">Check DNS records</div><div className="wizard-sub">We'll check your SPF, DKIM, and DMARC records now.</div></>}
+          {step===4 && <><div className="wizard-title">Health summary</div><div className="wizard-sub">Here's how <strong>{domain}</strong> is configured.</div></>}
+        </div>
+
+        <div className="wizard-body">
+          {error && <div className="alert alert-error" style={{marginBottom:16}}>{error}</div>}
+
+          {step===1 && (
+            <div className="form-group" style={{marginBottom:0}}>
+              <label className="form-label">Domain name</label>
+              <input className="form-input" type="text" placeholder="e.g. acme.com" value={domain} onChange={e => setDomain(e.target.value)} onKeyDown={e => e.key==='Enter' && handleAddDomain()}/>
+              <div style={{fontSize:12,color:'var(--muted)',marginTop:8}}>Enter the root domain without http:// or www</div>
+            </div>
+          )}
+
+          {step===2 && (
+            <div>
+              <div style={{fontSize:14,color:'var(--muted)',marginBottom:12,lineHeight:1.6}}>Add the following TXT record to your DNS provider (Cloudflare, Route53, GoDaddy, etc.):</div>
+              <div style={{display:'grid',gridTemplateColumns:'80px 1fr',gap:'8px 16px',fontSize:13,marginBottom:4}}>
+                <span style={{color:'var(--muted)',fontWeight:500}}>Type</span><span>TXT</span>
+                <span style={{color:'var(--muted)',fontWeight:500}}>Name</span><span>@ (root domain)</span>
+                <span style={{color:'var(--muted)',fontWeight:500}}>Value</span><span style={{fontFamily:'monospace',fontSize:12,wordBreak:'break-all'}}>dmarcbridge-verify={token}</span>
+              </div>
+              <div className="dns-record-box">
+                dmarcbridge-verify={token}
+                <button className="copy-btn" onClick={copyToken}>{copied?'Copied!':'Copy'}</button>
+              </div>
+              <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.6}}>⏱ DNS changes can take up to 48 hours to propagate.</div>
+            </div>
+          )}
+
+          {step===3 && (
+            <div style={{textAlign:'center',padding:'20px 0'}}>
+              <div style={{fontSize:48,marginBottom:16}}>🔍</div>
+              <div style={{fontFamily:'DM Serif Display,serif',fontSize:20,marginBottom:8}}>Ready to scan</div>
+              <div style={{fontSize:14,color:'var(--muted)'}}>We'll check SPF, DKIM, and DMARC records for <strong>{domain}</strong>.</div>
+            </div>
+          )}
+
+          {step===4 && checkResult && (
+            <div>
+              <div style={{textAlign:'center',marginBottom:24}}>
+                <div className="score-circle" style={{border:`4px solid ${checkResult.score>=80?'#2d6a4f':checkResult.score>=50?'#f59e0b':'#c62828'}`}}>
+                  <div className="score-circle-value">{checkResult.score}</div>
+                  <div className="score-circle-label">/ 100</div>
+                </div>
+                <div style={{fontSize:14,color:'var(--muted)'}}>
+                  {checkResult.score===100?'🎉 Perfect! All records configured.':checkResult.score>=66?'⚠️ Good, but some records need attention.':'❌ Several records are missing or misconfigured.'}
+                </div>
+              </div>
+              {[{key:'spf',label:'SPF Record',icon:'📧'},{key:'dmarc',label:'DMARC Record',icon:'🛡️'},{key:'dkim',label:'DKIM Record',icon:'🔑'}].map(item => (
+                <div className="check-item" key={item.key}>
+                  <div className="check-item-left">
+                    <div className="check-item-icon" style={{background:checkResult[item.key].status==='pass'?'#e8f5e9':'#fef2f2'}}>{item.icon}</div>
+                    <div>
+                      <div className="check-item-name">{item.label}</div>
+                      <div className="check-item-record">{checkResult[item.key].record || 'No record found'}</div>
+                    </div>
+                  </div>
+                  <span style={{fontSize:18}}>{checkResult[item.key].status==='pass'?'✅':'❌'}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="wizard-footer">
+          <button className="btn btn-outline" style={{padding:'9px 20px'}} onClick={step===1?onClose:()=>{setStep(s=>s-1);setError('');}}>
+            {step===1?'Cancel':'← Back'}
+          </button>
+          {step===1 && <button className="btn btn-accent" onClick={handleAddDomain} disabled={loading}>{loading?<><div className="spinner"/>Adding…</>:'Add Domain →'}</button>}
+          {step===2 && <button className="btn btn-accent" onClick={handleVerify} disabled={loading}>{loading?<><div className="spinner"/>Verifying…</>:'Verify Ownership →'}</button>}
+          {step===3 && <button className="btn btn-accent" onClick={handleCheck} disabled={loading}>{loading?<><div className="spinner"/>Scanning…</>:'Run DNS Check →'}</button>}
+          {step===4 && <button className="btn btn-accent" onClick={onDone}>Go to Domains ✓</button>}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const OverviewPage = ({ onAddDomain, domains }) => (
+  <div>
+    <div className="page-header fade-up"><h1 className="page-title">Good morning 👋</h1><p className="page-sub">Here's what's happening with your domains today.</p></div>
+    <div className="stats-row fade-up-1">
+      {[
+        {label:'Total Messages',value:'16.5k',delta:'+8% vs yesterday'},
+        {label:'DMARC Pass Rate',value:'94.2%',delta:'+1.2% this week'},
+        {label:'Failing Sources',value:'3',delta:'-1 from last week'},
+        {label:'Domains Monitored',value:String(domains.length||0),delta:<span onClick={onAddDomain} style={{cursor:'pointer',color:'var(--accent)'}}>+ Add domain</span>},
+      ].map(s => (
+        <div className="stat-card" key={s.label}>
+          <div className="stat-card-label">{s.label}</div>
+          <div className="stat-card-value">{s.value}</div>
+          <div className="stat-card-delta">{s.delta}</div>
+        </div>
+      ))}
+    </div>
+    <div className="content-grid fade-up-2">
+      <div className="card">
+        <div className="card-title">Recent DMARC Reports <span className="card-title-action">View all</span></div>
+        <table className="table">
+          <thead><tr><th>Domain</th><th>Source IP</th><th>Volume</th><th>SPF</th><th>DKIM</th></tr></thead>
+          <tbody>
+            {[{domain:'acme.com',ip:'209.85.220.41',vol:'4,201',spf:'pass',dkim:'pass'},{domain:'acme.com',ip:'198.51.100.22',vol:'312',spf:'fail',dkim:'pass'},{domain:'mail.acme.com',ip:'203.0.113.5',vol:'88',spf:'pass',dkim:'fail'}].map((r,i) => (
+              <tr key={i}>
+                <td style={{fontWeight:500}}>{r.domain}</td>
+                <td style={{fontFamily:'monospace',fontSize:12,color:'var(--muted)'}}>{r.ip}</td>
+                <td>{r.vol}</td>
+                <td><span className={`badge badge-${r.spf==='pass'?'pass':'fail'}`}>{r.spf}</span></td>
+                <td><span className={`badge badge-${r.dkim==='pass'?'pass':'fail'}`}>{r.dkim}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="card">
+        <div className="card-title">Recent Activity</div>
+        {[{dot:'green',text:'DMARC report received for acme.com',time:'2 min ago'},{dot:'red',text:'SPF failure detected from 198.51.100.22',time:'18 min ago'},{dot:'amber',text:'New sending source identified',time:'1 hr ago'},{dot:'green',text:'Policy updated to p=quarantine',time:'3 hrs ago'}].map((a,i) => (
+          <div className="activity-item" key={i}>
+            <div className={`activity-dot ${a.dot}`}/>
+            <div><div className="activity-text">{a.text}</div><div className="activity-time">{a.time}</div></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+const DomainsPage = ({ domains, onAddDomain }) => (
+  <div>
+    <div className="page-header fade-up" style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+      <div><h1 className="page-title">Domains</h1><p className="page-sub">Manage and monitor your domains.</p></div>
+      <button className="btn btn-accent" onClick={onAddDomain}>+ Add Domain</button>
+    </div>
+    {domains.length===0 ? (
+      <div className="card fade-up" style={{textAlign:'center',padding:'60px 40px'}}>
+        <div style={{fontSize:48,marginBottom:16}}>🌐</div>
+        <div style={{fontFamily:'DM Serif Display,serif',fontSize:22,marginBottom:8}}>No domains yet</div>
+        <div style={{color:'var(--muted)',fontSize:14,marginBottom:24}}>Add your first domain to start monitoring DMARC.</div>
+        <button className="btn btn-accent" onClick={onAddDomain}>+ Add Domain</button>
+      </div>
+    ) : (
+      <div className="card fade-up">
+        <table className="table">
+          <thead><tr><th>Domain</th><th>Status</th><th>Verified</th><th>Added</th></tr></thead>
+          <tbody>
+            {domains.map(d => (
+              <tr key={d.id}>
+                <td style={{fontWeight:500}}>{d.domain_name}</td>
+                <td><span className={`badge ${d.is_verified?'badge-pass':'badge-warn'}`}>{d.is_verified?'Verified':'Pending'}</span></td>
+                <td>{d.is_verified?'✅':'⏳'}</td>
+                <td style={{color:'var(--muted)',fontSize:13}}>{new Date(d.created_at).toLocaleDateString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+);
+
 const Dashboard = ({ onLogout, userEmail }) => {
   const [active, setActive] = useState('overview');
+  const [showWizard, setShowWizard] = useState(false);
+  const [domains, setDomains] = useState([]);
   const initials = userEmail ? userEmail[0].toUpperCase() : 'U';
+
+  const loadDomains = () => {
+    fetch('/domains/', {credentials:'include'})
+      .then(r => r.ok ? r.json() : [])
+      .then(setDomains)
+      .catch(() => {});
+  };
+
+  useEffect(() => { loadDomains(); }, []);
+
   const navItems = [
-    {id:'overview',label:'Overview',icon:<BarChart/>},
-    {id:'domains',label:'Domains',icon:<Globe/>},
-    {id:'reports',label:'Reports',icon:<Mail/>},
-    {id:'alerts',label:'Alerts',icon:<Bell/>},
+    {id:'overview',label:'Overview',icon:<BarChartIcon/>},
+    {id:'domains',label:'Domains',icon:<GlobeIcon/>},
+    {id:'reports',label:'Reports',icon:<MailIcon/>},
+    {id:'alerts',label:'Alerts',icon:<BellIcon/>},
   ];
+
   return (
     <div className="dashboard">
+      {showWizard && <OnboardingWizard onClose={() => setShowWizard(false)} onDone={() => { setShowWizard(false); loadDomains(); setActive('domains'); }}/>}
       <aside className="sidebar">
         <div className="sidebar-logo"><LogoMark size={30} accent/> DMARCBridge</div>
         <nav className="sidebar-nav">
           <div className="sidebar-section">Main</div>
           {navItems.map(item => (
-            <a key={item.id} className={`sidebar-item ${active===item.id?'active':''}`} onClick={() => setActive(item.id)} style={{cursor:'pointer'}}>
-              {item.icon} {item.label}
-            </a>
+            <a key={item.id} className={`sidebar-item ${active===item.id?'active':''}`} onClick={() => setActive(item.id)} style={{cursor:'pointer'}}>{item.icon} {item.label}</a>
           ))}
           <div className="sidebar-section" style={{marginTop:16}}>Account</div>
           <a className="sidebar-item" style={{cursor:'pointer'}}><SettingsIcon/> Settings</a>
@@ -444,72 +610,16 @@ const Dashboard = ({ onLogout, userEmail }) => {
         <div className="sidebar-footer">
           <div className="user-pill" onClick={onLogout} title="Click to log out">
             <div className="avatar">{initials}</div>
-            <div className="user-info">
-              <div className="user-name">{userEmail||'User'}</div>
-              <div className="user-role">Free plan</div>
-            </div>
-            <LogOut/>
+            <div className="user-info"><div className="user-name">{userEmail||'User'}</div><div className="user-role">Free plan</div></div>
+            <LogOutIcon/>
           </div>
         </div>
       </aside>
       <main className="main-content">
-        <div className="page-header fade-up">
-          <h1 className="page-title">Good morning 👋</h1>
-          <p className="page-sub">Here's what's happening with your domains today.</p>
-        </div>
-        <div className="stats-row fade-up-1">
-          {[
-            {label:'Total Messages',value:'16.5k',delta:'+8% vs yesterday'},
-            {label:'DMARC Pass Rate',value:'94.2%',delta:'+1.2% this week'},
-            {label:'Failing Sources',value:'3',delta:'-1 from last week'},
-            {label:'Domains Monitored',value:'3',delta:'Add domain →'},
-          ].map(s => (
-            <div className="stat-card" key={s.label}>
-              <div className="stat-card-label">{s.label}</div>
-              <div className="stat-card-value">{s.value}</div>
-              <div className="stat-card-delta">{s.delta}</div>
-            </div>
-          ))}
-        </div>
-        <div className="content-grid fade-up-2">
-          <div className="card">
-            <div className="card-title">Recent DMARC Reports <span className="card-title-action">View all</span></div>
-            <table className="table">
-              <thead><tr><th>Domain</th><th>Source IP</th><th>Volume</th><th>SPF</th><th>DKIM</th></tr></thead>
-              <tbody>
-                {[
-                  {domain:'acme.com',ip:'209.85.220.41',vol:'4,201',spf:'pass',dkim:'pass'},
-                  {domain:'acme.com',ip:'198.51.100.22',vol:'312',spf:'fail',dkim:'pass'},
-                  {domain:'mail.acme.com',ip:'203.0.113.5',vol:'88',spf:'pass',dkim:'fail'},
-                  {domain:'acme.com',ip:'192.0.2.100',vol:'1,540',spf:'pass',dkim:'pass'},
-                ].map((r,i) => (
-                  <tr key={i}>
-                    <td style={{fontWeight:500}}>{r.domain}</td>
-                    <td style={{fontFamily:'monospace',fontSize:12,color:'var(--muted)'}}>{r.ip}</td>
-                    <td>{r.vol}</td>
-                    <td><span className={`badge badge-${r.spf==='pass'?'pass':'fail'}`}>{r.spf}</span></td>
-                    <td><span className={`badge badge-${r.dkim==='pass'?'pass':'fail'}`}>{r.dkim}</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="card">
-            <div className="card-title">Recent Activity</div>
-            {[
-              {dot:'green',text:'DMARC report received for acme.com',time:'2 min ago'},
-              {dot:'red',text:'SPF failure detected from 198.51.100.22',time:'18 min ago'},
-              {dot:'amber',text:'New sending source identified',time:'1 hr ago'},
-              {dot:'green',text:'Policy updated to p=quarantine',time:'3 hrs ago'},
-              {dot:'green',text:'newsletter.co domain added',time:'Yesterday'},
-            ].map((a,i) => (
-              <div className="activity-item" key={i}>
-                <div className={`activity-dot ${a.dot}`}/>
-                <div><div className="activity-text">{a.text}</div><div className="activity-time">{a.time}</div></div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {active==='overview' && <OverviewPage onAddDomain={() => setShowWizard(true)} domains={domains}/>}
+        {active==='domains'  && <DomainsPage domains={domains} onAddDomain={() => setShowWizard(true)}/>}
+        {active==='reports'  && <div><div className="page-header fade-up"><h1 className="page-title">Reports</h1><p className="page-sub">DMARC aggregate reports coming soon.</p></div><div className="card fade-up" style={{textAlign:'center',padding:'60px 40px'}}><div style={{fontSize:48,marginBottom:16}}>🚧</div><div style={{color:'var(--muted)',fontSize:14}}>Coming soon</div></div></div>}
+        {active==='alerts'   && <div><div className="page-header fade-up"><h1 className="page-title">Alerts</h1><p className="page-sub">Alert configuration coming soon.</p></div><div className="card fade-up" style={{textAlign:'center',padding:'60px 40px'}}><div style={{fontSize:48,marginBottom:16}}>🚧</div><div style={{color:'var(--muted)',fontSize:14}}>Coming soon</div></div></div>}
       </main>
     </div>
   );
@@ -519,19 +629,16 @@ const App = () => {
   const [page, setPage] = useState('loading');
   const [userEmail, setUserEmail] = useState('');
 
-  React.useEffect(() => {
-    fetch('/auth/me', { credentials: 'include' })
+  useEffect(() => {
+    fetch('/auth/me', {credentials:'include'})
       .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (data) { setUserEmail(data.email); setPage('dashboard'); }
-        else setPage('landing');
-      })
+      .then(data => { if (data) { setUserEmail(data.email); setPage('dashboard'); } else setPage('landing'); })
       .catch(() => setPage('landing'));
   }, []);
 
   const handleLogin = (email) => { setUserEmail(email); setPage('dashboard'); };
   const handleLogout = async () => {
-    await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
+    await fetch('/auth/logout', {method:'POST',credentials:'include'});
     setUserEmail(''); setPage('landing');
   };
 
