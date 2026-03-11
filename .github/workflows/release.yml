@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build release zip
+        run: |
+          zip -r dmarcbridge-release.zip . \
+            --exclude ".git/*" \
+            --exclude "venv/*" \
+            --exclude ".env" \
+            --exclude "__pycache__/*" \
+            --exclude "*.pyc"
+
+      - name: Get short SHA
+        id: sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ steps.sha.outputs.sha }}
+          name: Build ${{ steps.sha.outputs.sha }}
+          body: "Automated release from commit ${{ steps.sha.outputs.sha }}"
+          files: dmarcbridge-release.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
